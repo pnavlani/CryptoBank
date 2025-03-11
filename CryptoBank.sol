@@ -27,4 +27,20 @@ contract CryptoBank {
     constructor(uint256 maxBalance_) {
         maxBalance = maxBalance_;
     }
+
+
+ //External Functions
+
+    //Deposit 
+    function depositEther(uint256 amount) external payable {
+        //mapping 
+        userBalance[msg.sender] += msg.value; 
+
+        emit EtherDeposit(msg.sender, msg.value);
+    }
+
+    //Withdraw
+
+    //Modify maxBalance
+
 }

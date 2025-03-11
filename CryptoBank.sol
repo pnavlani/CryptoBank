@@ -23,17 +23,29 @@ Rules:
 
 contract CryptoBank {
         uint256 public maxBalance;
+        address public admin;
+        mapping(address => uint256) public userBalance;
 
-    constructor(uint256 maxBalance_) {
+        //Events
+        event EtherDeposit(address user_, uint256 etheramount_);
+        event EtherWithdraw(address user_, uint256 etheramount_);
+
+        //Modifiers
+        modifier onlyAdmin() {
+            require(msg.sender == admin,"You`re Not Allowed");
+            _;
+        }
+
+    constructor(uint256 maxBalance_, address admin_) {
         maxBalance = maxBalance_;
+        admin = admin_;
     }
 
-
- //External Functions
+    //External Functions
 
     //Deposit 
     function depositEther() external payable {
-
+        require(userBalance[msg.sender] + msg.value <= maxBalance, "Maximum Balance reached");
         //mapping 
         userBalance[msg.sender] += msg.value; 
 
@@ -54,7 +66,10 @@ contract CryptoBank {
        emit EtherWithdraw(msg.sender, amount_);
     }
 
-
     //Modify maxBalance
+    function modifyMaxBalance(uint256 newMaxBalance_) external onlyAdmin {
+        maxBalance = newMaxBalance_;
+    }
+
 
 }

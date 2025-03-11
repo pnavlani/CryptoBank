@@ -32,7 +32,8 @@ contract CryptoBank {
  //External Functions
 
     //Deposit 
-    function depositEther(uint256 amount) external payable {
+    function depositEther() external payable {
+
         //mapping 
         userBalance[msg.sender] += msg.value; 
 
@@ -40,6 +41,19 @@ contract CryptoBank {
     }
 
     //Withdraw
+    function withdrawEther(uint256 amount_) external {
+        require(amount_ <= userBalance[msg.sender], "Not enough ether");
+        
+        //1. Update state 
+        userBalance[msg.sender] -= amount_;
+
+        //2. Transfer ether
+       (bool success,) = msg.sender.call{value: amount_}("");
+       require(success, "Transfer failed");
+
+       emit EtherWithdraw(msg.sender, amount_);
+    }
+
 
     //Modify maxBalance
 
